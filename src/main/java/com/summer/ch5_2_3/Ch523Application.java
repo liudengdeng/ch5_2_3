@@ -2,7 +2,7 @@ package com.summer.ch5_2_3;
 
 import com.summer.ch5_2_3.encodingfilter.HttpEncodingProperties;
 import com.summer.ch5_2_3.proprltbean.Book;
-import com.summer.hello.HelloService;
+import com.summer.ch5_2_3.thymeleaf.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -13,11 +13,17 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.filter.OrderedCharacterEncodingFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-@RestController
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+//@RestController
 @SpringBootApplication
 //允许HttpEncodingProperties类注入属性
 @EnableConfigurationProperties(HttpEncodingProperties.class)
@@ -39,8 +45,8 @@ public class Ch523Application {
     @Autowired
     private HttpEncodingProperties httpEncodingProperties;
 
-    @Autowired(required = false)
-    private HelloService helloService;
+//    @Autowired(required = false)
+//    private HelloService helloService;
 
 
     //当容器中没有这个Bean的时候新建该bean
@@ -73,9 +79,25 @@ public class Ch523Application {
         return "charset:" + httpEncodingProperties.getCharset() + "   force:" + httpEncodingProperties.isForce();
     }
 
-    @RequestMapping(value = "/hello")
-    public String hello() {
-        return "msg:" + helloService.sayHello();
+//    @RequestMapping(value = "/hello")
+//    public String hello() {
+//        return "msg:" + helloService.sayHello();
+//    }
+
+    @RequestMapping(value = "/thymeleaf")
+    public String thymeleaf(Model model) {
+        Person single = new Person("aa", 11);
+        List<Person> people = new ArrayList<Person>();
+        Person p1 = new Person("xx",11);
+        Person p2 = new Person("yy",22);
+        Person p3 = new Person("zz",33);
+        people.add(p1);
+        people.add(p2);
+        people.add(p3);
+
+        model.addAttribute("singlePerson", single);
+        model.addAttribute("people", people);
+        return "index";
     }
 
     public static void main(String[] args) {
